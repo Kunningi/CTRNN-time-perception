@@ -1,9 +1,7 @@
 from agent import Agent
-from ctrnn import CTRNN
 from mga import Microbial
 from tools import save, read
 import numpy as np
-import matplotlib.pyplot as plt
 
 #TASK PARAMETERS ---------------------------------------------------------------
 Duration = 1000    # Duration of simulation, in steps
