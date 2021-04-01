@@ -46,7 +46,8 @@ evolve, and indeed it was (Fig A).
 Next we evolved the agents to perform a simple delay task. In this task, agents must delay their
 action by as much as possible on order to attain greater fitness. However, if an agent never takes an 
 action, that is considered 0 fitness. Fig. B demonstrates proof-of-evolvability with toy parameters; 
-Fig. C will be the same but with increased trial duration and population. 
+Fig. C is the same but with increased trial duration and population. Fig C. shows that generally 
+speaking, the agents can only delay by 200 steps. Maybe there's a bug. Now we're going to 
 
 
 TODO: 
