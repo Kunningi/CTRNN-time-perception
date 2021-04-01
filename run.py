@@ -1,7 +1,11 @@
 from agent import Agent
 from mga import Microbial
 from tools import save, read
+from matplotlib import pyplot as plt
 import numpy as np
+import time
+
+np.random.seed(2)
 
 #TASK PARAMETERS ---------------------------------------------------------------
 Duration = 1000    # Duration of simulation, in steps
@@ -10,7 +14,7 @@ Dt = 0.01
 Stimuli = [0.1, 0.2]    # External input/stimuli for the time task
 
 #CTRNN PARAMETERS --------------------------------------------------------------
-Size = 5
+Size = 1
 WeightRange = 15
 BiasRange = 15
 TimeConstMin = Dt*10
@@ -23,7 +27,7 @@ GenotypeLength = Size*Size + Size*3    # Slightly longer because of incoding the
 Population = 100
 RecombProb = 0.5
 MutatProb = 0.1
-Generations = 300
+Generations = 200
 Tournaments = Generations * Population
 
 #FITNESS FUNCTIONS -------------------------------------------------------------
@@ -72,10 +76,12 @@ def fitnessFunction2(genotype):
 
 # ============================= RUNTIME ========================================
     
-
-test = Microbial(fitnessFunction2, Population, GenotypeLength, RecombProb, MutatProb)
-test.run(Tournaments)
-test.showFitness()
-save('delayAction_N5_P100_G300', test)
-
-
+for s in range(10):
+    Size = s + 1 
+    GenotypeLength = Size*Size + Size*3
+    start = time.time()
+    subject = Microbial(fitnessFunction2, Population, GenotypeLength, RecombProb, MutatProb)
+    subject.run(Tournaments)
+    subject.showFitness2('FigD%i' % Size)
+    save(('delayAction_N%i_P100' % Size), subject)
+    print('TOTAL TIME ELAPSED: %f sec' % (time.time()-start))
