@@ -1,6 +1,8 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+from datetime import date
+import time
 
 class Microbial():
     def __init__(self, fitnessFunction, popsize, genesize, recombProb, mutatProb):
@@ -12,8 +14,11 @@ class Microbial():
         self.pop = np.random.rand(popsize,genesize)*2 - 1
         self.avgHistory = []
         self.bestHistory = []
+        self.popHistory = []
+        self.dateCreated = str(date.today())
+        self.dateEdited = str(date.today())
 
-    def showFitness(self):
+    def showFitness(self, savename=''):
         plt.plot(self.bestHistory, label="Best")
         plt.plot(self.avgHistory, label="Average")
         plt.xlabel("Generations")
@@ -21,31 +26,54 @@ class Microbial():
         plt.title("Best and average fitness")
         plt.legend()
         plt.show()
-
+        if savename !='':
+            plt.savefig(savename)
+            
+    def showFitness2(self, savename=''):
+        plt.plot(self.popHistory,alpha=0.1)
+        plt.plot(self.bestHistory, label="Best")
+        plt.plot(self.avgHistory, label="Average")
+        plt.xlabel("Generations")
+        plt.ylabel("Fitness")
+        plt.title("Best and average fitness")
+        plt.legend()
+        plt.show()
+        if savename !='':
+            plt.savefig(savename)
+            
     def fitStats(self):
-        bestfit = self.fitnessFunction(self.pop[0])
-        bestind = -1
-        avgfit = 0
-        for i in self.pop:
-            fit = self.fitnessFunction(i)
-            avgfit += fit
-            if (fit > bestfit):
-                bestfit = fit
-                bestind = i
-        return avgfit/self.popsize, bestfit, bestind
+#        bestfit = self.fitnessFunction(self.pop[0])
+#        bestind = -1
+#        avgfit = 0
+#        for i in self.pop:
+#            fit = self.fitnessFunction(i)
+#            avgfit += fit
+#            if (fit > bestfit):
+#                bestfit = fit
+#                bestind = i
+#         return avgfit/self.popsize, bestfit, popfit, bestind
+        popfit = np.zeros((self.pop.shape[0]))
+        for i in range(self.pop.shape[0]):
+            fitness = self.fitnessFunction(self.pop[i])
+            popfit[i] = fitness
+        
+        return popfit.mean(), popfit.max(), popfit
 
     def run(self,tournaments):
 
         # Evolutionary loop
+        start = time.time()
         report_progress = 0
         for i in range(tournaments):
 
             # Report statistics every generation
             if (i%self.popsize==0):
                 #print(i/self.popsize)
-                af, bf, bi = self.fitStats()
+#                af, bf, bi = self.fitStats()
+                af, bf, pf = self.fitStats()
                 self.avgHistory.append(af)
                 self.bestHistory.append(bf)
+                self.popHistory.append(pf)
 
             # Step 1: Pick 2 individuals
             a = random.randint(0,self.popsize-1)
@@ -76,4 +104,8 @@ class Microbial():
 
             if i/tournaments*100 > report_progress:
                 print('%d %% Complete' % (report_progress))
+                print('Time elapsed: %f sec' % (time.time()-start))
                 report_progress += 10
+                
+        self.dateEdited = str(date.today())
+        
